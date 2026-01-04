@@ -1,0 +1,37 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "../../layouts/Layout.astro";
+import { articles } from "../../common/articles"
+
+export const getStaticPaths = (() => {
+  
+  return articles.map(article => ({params: {slug: article.slug}}));
+}) satisfies GetStaticPaths;
+
+const { slug } = Astro.params
+
+const currentArticle = articles.find(article => article.slug === slug)
+---
+
+<Layout>
+  <h1 
+    class="font-bold text-2xl mb-6"
+    transition:name={currentArticle?.title}
+  >
+    {currentArticle?.title}
+  </h1>
+  <p class="text-Grayish-blue italic mb-6">{currentArticle?.description}</p>
+  <p>{currentArticle?.content}</p>
+  <div class="flex justify-end mt-6">
+    <a id="go-back" href="/" class="hover:text-Soft-orange">Atrás</a>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const backBtn = document.querySelector("#go-back");
+    backBtn?.addEventListener("click", () => {
+      history.back()
+    })
+  })
+</script>
